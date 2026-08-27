@@ -166,6 +166,8 @@ Without step 1, equivalent broad knowledge cannot be conjured on this machine.
 - `tiny_lm.cpp` — a real from-scratch character-level causal neural LM with
   truncated BPTT/Adam and an AURORA validation overlay.
 - `sweep.py` — a small vocabulary-scaling study for the Python memory compiler.
+- `scaling_report.py` — dependency-free Amdahl/scaling calculation generator.
+- `SCALING_REPORT.md` and `scaling.svg` — measured-versus-projected tables and visualization.
 - `data/tinyshakespeare_200k.txt` — the GitHub-only 200 KB training subset;
   provenance and checksum are in `data/README.md`.
 

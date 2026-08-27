@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="790" viewBox="0 0 1200 790">
+<style>
+.title { font: 700 24px sans-serif; fill: #172033; }
+.subtitle { font: 14px sans-serif; fill: #536174; }
+.panel { fill: #f7f9fc; stroke: #d7deea; stroke-width: 1; }
+.heading { font: 700 17px sans-serif; fill: #172033; }
+.label { font: 13px sans-serif; fill: #334155; }
+.value { font: 700 13px sans-serif; fill: #172033; }
+.axis { font: 11px sans-serif; fill: #64748b; }
+.note { font: 12px sans-serif; fill: #536174; }
+.grid { stroke: #d7deea; stroke-width: 1; stroke-dasharray: 3 4; }
+</style>
+<rect width="100%" height="100%" fill="white"/>
+<text x="36" y="38" class="title">AURORA-PRM: measured result vs scalable component model</text>
+<text x="36" y="62" class="subtitle">Log bars are ratios, not a promise of end-to-end frontier-LLM speed. Measured on the local CPU prototype.</text>
+
+<rect x="30" y="82" width="550" height="292" rx="8" class="panel"/>
+<text x="50" y="112" class="heading">1. What was actually measured</text>
+<text x="50" y="133" class="note">The current RNN was trained once; AURORA was compiled after training.</text>
+
+<text x="50.0" y="170.0" class="label">Sparse candidate work</text><rect x="255.0" y="155.0" width="340.0" height="24.0" rx="4" fill="#2563eb"/><text x="605.0" y="170.0" class="value">2,048.00x</text>
+<text x="50.0" y="212.0" class="label">Packed contextual memory</text><rect x="255.0" y="197.0" width="138.5" height="24.0" rx="4" fill="#0891b2"/><text x="403.5" y="212.0" class="value">22.32x</text>
+<text x="50.0" y="254.0" class="label">Perplexity ratio (lower is better)</text><rect x="255.0" y="239.0" width="2.0" height="24.0" rx="4" fill="#16a34a"/><text x="267.0" y="254.0" class="value">1.15x</text>
+<text x="50.0" y="296.0" class="label">Core training wall-clock speedup</text><rect x="255.0" y="281.0" width="2.0" height="24.0" rx="4" fill="#64748b"/><text x="267.0" y="296.0" class="value">1.00x / not accelerated</text>
+<text x="50" y="344" class="note">Training speedup: 1.00x is the honest result for this version.</text>
+<rect x="610" y="82" width="560" height="292" rx="8" class="panel"/>
+<text x="630" y="112" class="heading">2. Amdahl: end-to-end speedup</text>
+<text x="630" y="133" class="note">Only the accelerated fraction f benefits from a 2,048x local operation reduction.</text>
+<line x1="650" y1="325.0" x2="1115" y2="325.0" class="grid"/>
+<text x="622" y="329.0" class="axis">1x</text>
+<line x1="650" y1="300.4" x2="1115" y2="300.4" class="grid"/>
+<text x="622" y="304.4" class="axis">2x</text>
+<line x1="650" y1="267.9" x2="1115" y2="267.9" class="grid"/>
+<text x="622" y="271.9" class="axis">5x</text>
+<line x1="650" y1="243.4" x2="1115" y2="243.4" class="grid"/>
+<text x="622" y="247.4" class="axis">10x</text>
+<line x1="650" y1="218.8" x2="1115" y2="218.8" class="grid"/>
+<text x="622" y="222.8" class="axis">20x</text>
+<line x1="650" y1="186.3" x2="1115" y2="186.3" class="grid"/>
+<text x="622" y="190.3" class="axis">50x</text>
+<line x1="650" y1="161.7" x2="1115" y2="161.7" class="grid"/>
+<text x="622" y="165.7" class="axis">100x</text>
+<circle cx="650.0" cy="321.3" r="5" fill="#7c3aed"/>
+<text x="636.0" y="345" class="axis">10%</text>
+<text x="635.0" y="311.3" class="value">1.11x</text>
+<circle cx="743.0" cy="314.8" r="5" fill="#7c3aed"/>
+<text x="729.0" y="345" class="axis">25%</text>
+<text x="728.0" y="304.8" class="value">1.33x</text>
+<circle cx="836.0" cy="300.4" r="5" fill="#7c3aed"/>
+<text x="822.0" y="345" class="axis">50%</text>
+<text x="821.0" y="290.4" class="value">2.00x</text>
+<circle cx="929.0" cy="275.9" r="5" fill="#7c3aed"/>
+<text x="915.0" y="345" class="axis">75%</text>
+<text x="914.0" y="265.9" class="value">3.99x</text>
+<circle cx="1022.0" cy="243.5" r="5" fill="#7c3aed"/>
+<text x="1008.0" y="345" class="axis">90%</text>
+<text x="1007.0" y="233.5" class="value">9.96x</text>
+<circle cx="1115.0" cy="163.4" r="5" fill="#7c3aed"/>
+<text x="1101.0" y="345" class="axis">99%</text>
+<text x="1100.0" y="153.4" class="value">95.39x</text>
+<polyline points="650.0,321.3 743.0,314.8 836.0,300.4 929.0,275.9 1022.0,243.5 1115.0,163.4" fill="none" stroke="#7c3aed" stroke-width="3"/>
+<text x="650" y="350" class="note">At f=90%: 9.96x end-to-end.</text>
+<text x="650" y="366" class="note">To reach 1,000x total, over 99.95% of all baseline work would have to be replaced.</text>
+<rect x="30" y="397" width="1140" height="356" rx="8" class="panel"/>
+<text x="50" y="428" class="heading">3. Projection for larger vocabularies / LLM-like systems</text>
+<text x="50" y="449" class="note">This is the AURORA component only. Core weights, reasoning and data costs remain.</text>
+<text x="50" y="478" class="value">archetype</text>
+<text x="160" y="478" class="value">core params</text>
+<text x="280" y="478" class="value">vocab V</text>
+<text x="425" y="478" class="value">sparse k</text>
+<text x="610" y="478" class="value">component V/k</text>
+<text x="825" y="478" class="value">4-bit core*</text>
+<text x="50" y="505" class="label">small</text>
+<text x="160" y="505" class="label">7B</text>
+<text x="280" y="505" class="label">32K</text>
+<text x="425" y="505" class="label">1</text>
+<text x="610" y="505" class="label">32,000x</text>
+<text x="825" y="505" class="label">3.5 GB</text>
+<text x="50" y="535" class="label">medium</text>
+<text x="160" y="535" class="label">13B</text>
+<text x="280" y="535" class="label">32K</text>
+<text x="425" y="535" class="label">1</text>
+<text x="610" y="535" class="label">32,000x</text>
+<text x="825" y="535" class="label">6.5 GB</text>
+<text x="50" y="565" class="label">large</text>
+<text x="160" y="565" class="label">70B</text>
+<text x="280" y="565" class="label">128K</text>
+<text x="425" y="565" class="label">4</text>
+<text x="610" y="565" class="label">32,000x</text>
+<text x="825" y="565" class="label">35 GB</text>
+<text x="50" y="595" class="label">frontier</text>
+<text x="160" y="595" class="label">400B</text>
+<text x="280" y="595" class="label">128K</text>
+<text x="425" y="595" class="label">4</text>
+<text x="610" y="595" class="label">32,000x</text>
+<text x="825" y="595" class="label">200 GB</text>
+<text x="50" y="640" class="note">*4-bit core size is only P×0.5 bytes, excluding scales, KV cache and runtime overhead.</text>
+<text x="50" y="660" class="note">AURORA does not shrink these core weights. It can shrink a separate dense V-wide contextual memory.</text>
+<text x="50" y="686" class="note">Raw one-entry storage estimate: dense 2V bytes vs sparse ~25 bytes; real benefit depends on hit rate and bandwidth.</text>
+<text x="50" y="712" class="note">Use the report tables for formulas and the exact distinction between measured and projected numbers.</text>
+</svg>
