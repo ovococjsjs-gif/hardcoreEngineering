@@ -650,10 +650,13 @@ int main(int argc, char **argv) {
         const auto t1 = std::chrono::steady_clock::now();
         const double train_seconds = std::chrono::duration<double>(t1 - t0).count();
 
+        const auto eval0 = std::chrono::steady_clock::now();
         const EvalResult calibration_base = evaluate_hybrid(
             model, nullptr, calibration, 0, calibration.size(), 0.0, 50000);
         const EvalResult test_base = evaluate_hybrid(
             model, nullptr, test, 0, test.size(), 0.0, 50000);
+        const auto eval1 = std::chrono::steady_clock::now();
+        const double base_eval_seconds = std::chrono::duration<double>(eval1 - eval0).count();
 
         AuroraMemory memory(static_cast<int>(vocab.symbols.size()), cfg.memory_order,
                             cfg.min_seen, cfg.min_confidence);
@@ -673,8 +676,11 @@ int main(int argc, char **argv) {
                 selected_boost = candidate_boost;
             }
         }
+        const auto hybrid_eval0 = std::chrono::steady_clock::now();
         const EvalResult test_hybrid = evaluate_hybrid(
             model, &memory, test, 0, test.size(), selected_boost, 50000);
+        const auto hybrid_eval1 = std::chrono::steady_clock::now();
+        const double hybrid_eval_seconds = std::chrono::duration<double>(hybrid_eval1 - hybrid_eval0).count();
 
         std::vector<int> seed;
         for (int i = 0; i < std::min<int>(cfg.memory_order, static_cast<int>(test.size())); ++i)
@@ -696,6 +702,8 @@ int main(int argc, char **argv) {
                   << "  \"seq\": " << cfg.seq << ",\n"
                   << "  \"batch\": " << cfg.batch << ",\n"
                   << "  \"train_seconds\": " << std::setprecision(6) << train_seconds << ",\n"
+                  << "  \"base_eval_seconds_calibration_plus_test\": " << base_eval_seconds << ",\n"
+                  << "  \"hybrid_eval_seconds_test\": " << hybrid_eval_seconds << ",\n"
                   << "  \"last_train_loss\": " << last_loss << ",\n"
                   << "  \"calibration_base_loss\": " << calibration_base.loss << ",\n"
                   << "  \"calibration_base_perplexity\": " << calibration_base.perplexity << ",\n"

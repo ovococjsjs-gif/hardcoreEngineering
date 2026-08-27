@@ -163,8 +163,13 @@ Without step 1, equivalent broad knowledge cannot be conjured on this machine.
 - `aurora.py` — implementation and reproducible benchmark.
 - `test_aurora.py` — tests for exact replay, honest OOD misses, and collision
   behavior.
-- `tiny_lm.cpp` — a real from-scratch character-level causal neural LM with
-  truncated BPTT/Adam and an AURORA validation overlay.
+- `tiny_lm.cpp` — a full-rank from-scratch character-level causal neural LM
+  with truncated BPTT/Adam and an AURORA validation overlay.
+- `cirrus_lm.cpp` — the second end-to-end CIRRUS attempt: low-rank recurrent
+  core, factorized output, real int8 inference, streaming evaluation, and
+  sparse memory.
+- `SYSTEM_REPORT.md` — side-by-side full-rank/CIRRUS measurements and the
+  quality trade-off.
 - `sweep.py` — a small vocabulary-scaling study for the Python memory compiler.
 - `scaling_report.py` — dependency-free Amdahl/scaling calculation generator.
 - `SCALING_REPORT.md` and `scaling.svg` — measured-versus-projected tables and visualization.
