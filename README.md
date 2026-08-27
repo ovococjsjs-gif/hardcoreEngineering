@@ -163,3 +163,64 @@ Without step 1, equivalent broad knowledge cannot be conjured on this machine.
 - `aurora.py` — implementation and reproducible benchmark.
 - `test_aurora.py` — tests for exact replay, honest OOD misses, and collision
   behavior.
+- `tiny_lm.cpp` — a real from-scratch character-level causal neural LM with
+  truncated BPTT/Adam and an AURORA validation overlay.
+- `sweep.py` — a small vocabulary-scaling study for the Python memory compiler.
+- `data/tinyshakespeare_200k.txt` — the GitHub-only 200 KB training subset;
+  provenance and checksum are in `data/README.md`.
+
+## Real local neural experiment
+
+The second experiment is deliberately a genuine learned model rather than a
+lookup-only demo. `tiny_lm.cpp` implements a small Elman causal language model:
+
+```text
+h_t = tanh(E[x_t] + W h_{t-1} + b)
+logits_t = O h_t + b_o
+```
+
+It is trained with full truncated backpropagation through time and separate
+Adam state for every parameter tensor. The data is split into 80% train, 10%
+calibration, and 10% untouched test. AURORA memory is built from train only;
+one scalar memory boost is selected on calibration and the headline score is
+reported on test. This is a character LM, not a Transformer and not an
+open-domain frontier LLM; its perplexity must not be compared numerically to
+BPE-tokenized Sonnet reports.
+
+Build and run:
+
+```bash
+c++ -O3 -std=c++17 -Wall -Wextra -pedantic tiny_lm.cpp -o tiny_lm
+./tiny_lm data/tinyshakespeare_200k.txt --steps 3000 --seq 64 --batch 2 --hidden 64
+```
+
+On the supplied CPU run, the JSON result was:
+
+```text
+train tokens                         160,000
+calibration tokens                    20,000
+test tokens                           20,000
+vocabulary                                62
+RNN parameters                        12,158
+training time                         3.69 s
+baseline test loss                    2.19923
+baseline character perplexity          9.01808
+baseline top-1 accuracy               38.587%
+AURORA test loss                      2.05802
+AURORA character perplexity            7.83044
+AURORA top-1 accuracy                 43.812%
+AURORA test memory hits                4,690
+compiled sparse entries                8,744
+```
+
+On this untouched test split, the overlay reduced loss by about 6.4%,
+perplexity by about 13.2%, and increased top-1 accuracy by 5.2 percentage
+points. It does not change the trained RNN weights. The memory compiler
+observed 48,055 distinct five-character contexts and estimated 22.3x less
+packed memory than a dense 2-byte next-character vector for every observed
+context. The scalar gate was selected on calibration rather than test, which
+avoids using the headline split to tune the result.
+
+The generated sample is printed by the executable. It is visibly more
+Shakespeare-like than the untrained/random sample, but qualitative samples are
+not a substitute for the reported loss and accuracy.
